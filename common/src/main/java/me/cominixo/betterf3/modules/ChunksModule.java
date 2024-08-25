@@ -126,7 +126,7 @@ public class ChunksModule extends BaseModule {
     }
 
     final Level world = DataFixUtils.orElse(Optional.ofNullable(client.getSingleplayerServer()).flatMap(integratedServer -> Optional.ofNullable(integratedServer.getLevel(client.level.dimension()))), client.level);
-    final LongSet forceLoadedChunks = world instanceof ServerLevel ? ((ServerLevel) world).getForcedChunks() :
+    final LongSet forceLoadedChunks = world instanceof ServerLevel serverLevel ? serverLevel.getForcedChunks() :
     LongSets.EMPTY_SET;
 
     final IntegratedServer integratedServer = client.getSingleplayerServer();

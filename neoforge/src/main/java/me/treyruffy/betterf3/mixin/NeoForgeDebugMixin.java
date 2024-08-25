@@ -42,43 +42,23 @@ public abstract class NeoForgeDebugMixin {
   @Shadow protected abstract List<String> getSystemInformation();
 
   /**
-   * Renders the text on the left side of the screen.
+   * Renders the text on the screen.
    *
-   * @param context Draw Context
-   * @param additional Additional text
+   * @param guiGraphics GUI Graphics
    * @param ci Callback info
    */
-  @Inject(method = "drawGameInformation", at = @At("HEAD"), cancellable = true)
-  public void drawLeftText(final GuiGraphics context, final List<String> additional, final CallbackInfo ci) {
+  @Inject(method = "method_51746", at = @At("HEAD"), cancellable = true, order = 2000)
+  public void drawText(final GuiGraphics guiGraphics, final CallbackInfo ci) {
 
     if (GeneralOptions.disableMod) {
       return;
     }
 
-    final List<Component> list = DebugRenderer.newText(this.minecraft, true, this.getGameInformation(), this.getSystemInformation());
+    final List<Component> leftList = DebugRenderer.newText(this.minecraft, true, this.getGameInformation(), this.getSystemInformation());
+    DebugRenderer.drawLeftText(leftList, guiGraphics, this.minecraft, this.font, null);
 
-    DebugRenderer.drawLeftText(list, context, this.minecraft, this.font, additional);
-
-    ci.cancel();
-  }
-
-  /**
-   * Renders the text on the right side of the screen.
-   *
-   * @param context Draw Context
-   * @param additional Additional text
-   * @param ci Callback info
-   */
-  @Inject(method = "drawSystemInformation", at = @At("HEAD"), cancellable = true)
-  public void drawRightText(final GuiGraphics context, final List<String> additional, final CallbackInfo ci) {
-
-    if (GeneralOptions.disableMod) {
-      return;
-    }
-
-    final List<Component> list = DebugRenderer.newText(this.minecraft, false, this.getGameInformation(), this.getSystemInformation());
-
-    DebugRenderer.drawRightText(list, context, this.minecraft, this.font, additional);
+    final List<Component> rightList = DebugRenderer.newText(this.minecraft, false, this.getGameInformation(), this.getSystemInformation());
+    DebugRenderer.drawRightText(rightList, guiGraphics, this.minecraft, this.font, null);
 
     ci.cancel();
   }

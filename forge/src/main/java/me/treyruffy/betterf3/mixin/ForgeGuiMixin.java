@@ -1,10 +1,14 @@
 package me.treyruffy.betterf3.mixin;
 
+import java.util.List;
+import me.cominixo.betterf3.config.GeneralOptions;
+import me.cominixo.betterf3.utils.DebugRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import org.jetbrains.annotations.NotNull;
-import org.objectweb.asm.Opcodes;
+import net.minecraft.client.gui.components.DebugScreenOverlay;
+import net.minecraft.network.chat.Component;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,34 +18,67 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /**
  * Forge InGame GUI Mixin.
  */
-@Mixin(ForgeGui.class)
+@Mixin(DebugScreenOverlay.class)
 public abstract class ForgeGuiMixin {
 
+  @Shadow @Final
+  private Minecraft minecraft;
+  @Shadow @Final private Font font;
+
   /**
-   * Minecraft Client.
+   * Gets the information on the left side of the screen.
    *
-   * @return the minecraft client
+   * @return the game information
    */
   @SuppressWarnings("checkstyle:MethodName")
-  @Shadow(remap = false) public abstract Minecraft getMinecraft();
+  @Shadow protected abstract List<String> getGameInformation();
 
   /**
-   * Modifies the F3 Menu from Forge's to BetterF3.
+   * Gets the information on the right side of the screen.
    *
-   * @param width width
-   * @param height width
-   * @param guiGraphics the draw context
+   * @return the system information
+   */
+  @SuppressWarnings("checkstyle:MethodName")
+  @Shadow protected abstract List<String> getSystemInformation();
+
+  /**
+   * Renders the text on the left side of the screen.
+   *
+   * @param guiGraphics GUI Graphics
    * @param ci Callback info
    */
-  @Inject(remap = false, method = "renderHUDText", at = @At(value = "INVOKE", opcode = Opcodes.PUTFIELD, target =
-  "Lnet/minecraftforge/client/gui/overlay/ForgeGui$OverlayAccess;update()V"), cancellable = true)
-  public void customDebugMenu(final int width, final int height, final GuiGraphics guiGraphics, final @NotNull CallbackInfo ci) {
-    // Sets up BetterF3's debug screen
-    this.getMinecraft().getDebugOverlay().render(guiGraphics);
+  @Inject(method = "drawGameInformation", at = @At("HEAD"), cancellable = true)
+  public void drawLeftText(final GuiGraphics guiGraphics, final CallbackInfo ci) {
 
-    this.getMinecraft().getProfiler().pop();
+    if (GeneralOptions.disableMod) {
+      return;
+    }
 
-    // Cancels the rest of the code from running, which replaces Forge's debug screen.
+    final List<Component> list = DebugRenderer.newText(this.minecraft, true, this.getGameInformation(), this.getSystemInformation());
+
+    DebugRenderer.drawLeftText(list, guiGraphics, this.minecraft, this.font, null);
+
     ci.cancel();
   }
+
+  /**
+   * Renders the text on the right side of the screen.
+   *
+   * @param guiGraphics GUI Graphics
+   * @param ci Callback info
+   */
+  @Inject(method = "drawSystemInformation", at = @At("HEAD"), cancellable = true)
+  public void drawRightText(final GuiGraphics guiGraphics, final CallbackInfo ci) {
+
+    if (GeneralOptions.disableMod) {
+      return;
+    }
+
+    final List<Component> list = DebugRenderer.newText(this.minecraft, false, this.getGameInformation(), this.getSystemInformation());
+
+    DebugRenderer.drawRightText(list, guiGraphics, this.minecraft, this.font, null);
+
+    ci.cancel();
+  }
+
 }

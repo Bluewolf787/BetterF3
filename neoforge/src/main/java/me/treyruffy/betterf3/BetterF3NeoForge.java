@@ -53,7 +53,7 @@ public class BetterF3NeoForge {
     }
   }
 
-  private final static class ClientSetup {
+  private static final class ClientSetup {
     private static void setup(final IEventBus eventBus) {
       setupModules();
 

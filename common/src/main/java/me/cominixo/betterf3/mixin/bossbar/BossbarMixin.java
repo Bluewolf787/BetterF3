@@ -25,10 +25,8 @@ public class BossbarMixin {
    */
   @Inject(at = @At("HEAD"), method = "render", cancellable = true)
   public void init(final CallbackInfo info) {
-    if (GeneralOptions.hideBossbar) {
-      if (this.minecraft.getDebugOverlay().showDebugScreen()) {
-        info.cancel();
-      }
+    if (GeneralOptions.hideBossbar && this.minecraft.getDebugOverlay().showDebugScreen()) {
+      info.cancel();
     }
   }
 

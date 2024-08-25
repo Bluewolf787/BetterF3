@@ -189,17 +189,15 @@ public final class EditModulesScreen {
       }
     }
 
-    if (module instanceof EntityModule entityModule) {
-      if (entityModule.totalColor != null && entityModule.defaultTotalColor != null) {
-        final ColorEntry totalColor = entryBuilder
-          .startColorField(Component.translatable("config.betterf3.color.entities.total"), entityModule.totalColor.getValue())
-          .setDefaultValue(entityModule.defaultTotalColor.getValue())
-          .setTooltip(Component.translatable("config.betterf3.color.entities.total.tooltip"))
-          .setSaveConsumer(newValue -> entityModule.totalColor = TextColor.fromRgb(newValue))
-          .build();
+    if (module instanceof EntityModule entityModule && entityModule.totalColor != null && entityModule.defaultTotalColor != null) {
+      final ColorEntry totalColor = entryBuilder
+        .startColorField(Component.translatable("config.betterf3.color.entities.total"), entityModule.totalColor.getValue())
+        .setDefaultValue(entityModule.defaultTotalColor.getValue())
+        .setTooltip(Component.translatable("config.betterf3.color.entities.total.tooltip"))
+        .setSaveConsumer(newValue -> entityModule.totalColor = TextColor.fromRgb(newValue))
+        .build();
 
-        general.addEntry(totalColor);
-      }
+      general.addEntry(totalColor);
     }
 
     if (module instanceof HelpModule helpModule) {
@@ -227,17 +225,15 @@ public final class EditModulesScreen {
       }
     }
 
-    if (module instanceof SoundModule soundModule) {
-      if (soundModule.maximumColor != null && soundModule.defaultMaximumColor != null) {
-        final ColorEntry maximumColor = entryBuilder
-          .startColorField(Component.translatable("config.betterf3.color.sound.maximum"), soundModule.maximumColor.getValue())
-          .setDefaultValue(soundModule.defaultMaximumColor.getValue())
-          .setTooltip(Component.translatable("config.betterf3.color.sound.maximum.tooltip"))
-          .setSaveConsumer(newValue -> soundModule.maximumColor = TextColor.fromRgb(newValue))
-          .build();
+    if (module instanceof SoundModule soundModule && soundModule.maximumColor != null && soundModule.defaultMaximumColor != null) {
+      final ColorEntry maximumColor = entryBuilder
+        .startColorField(Component.translatable("config.betterf3.color.sound.maximum"), soundModule.maximumColor.getValue())
+        .setDefaultValue(soundModule.defaultMaximumColor.getValue())
+        .setTooltip(Component.translatable("config.betterf3.color.sound.maximum.tooltip"))
+        .setSaveConsumer(newValue -> soundModule.maximumColor = TextColor.fromRgb(newValue))
+        .build();
 
-        general.addEntry(maximumColor);
-      }
+      general.addEntry(maximumColor);
     }
 
     if (module instanceof SystemModule systemModule) {

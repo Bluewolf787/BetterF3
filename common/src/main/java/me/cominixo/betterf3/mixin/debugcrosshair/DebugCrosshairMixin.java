@@ -15,10 +15,9 @@ public class DebugCrosshairMixin {
 
   @Redirect(method = "renderCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;showDebugScreen()Z"))
   private boolean removeDebugCrosshair(final DebugScreenOverlay instance) {
-    if (!GeneralOptions.disableMod) {
-      if (GeneralOptions.hideDebugCrosshair)
-        return false;
-    }
+    if (!GeneralOptions.disableMod && GeneralOptions.hideDebugCrosshair)
+      return false;
+
     return instance.showDebugScreen();
   }
 }

@@ -56,7 +56,7 @@ public class BetterF3Forge {
     }
   }
 
-  private final static class ClientSetup {
+  private static final class ClientSetup {
     private static void setup() {
       setupModules();
 
