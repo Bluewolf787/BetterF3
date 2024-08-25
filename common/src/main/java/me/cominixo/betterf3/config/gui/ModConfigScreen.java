@@ -55,8 +55,7 @@ public class ModConfigScreen extends Screen {
 
   @Override
   public void render(final GuiGraphics context, final int mouseX, final int mouseY, final float delta) {
-    this.renderBackground(context, mouseX, mouseY, delta);
-    context.drawCenteredString(this.font, this.title, this.width / 2, 20, 16777215);
     super.render(context, mouseX, mouseY, delta);
+    context.drawCenteredString(this.font, this.title, this.width / 2, 20, 16777215);
   }
 }

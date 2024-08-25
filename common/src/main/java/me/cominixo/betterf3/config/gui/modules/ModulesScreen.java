@@ -101,13 +101,9 @@ public class ModulesScreen extends Screen {
 
   @Override
   public void render(final GuiGraphics context, final int mouseX, final int mouseY, final float delta) {
-    this.modulesListWidget.render(context, mouseX, mouseY, delta);
-    if (minecraft != null && this.minecraft.level != null) {
-      context.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
-    }
-    context.drawCenteredString(this.font, this.title, this.width / 2, 20, 0xFFFFFF);
     super.render(context, mouseX, mouseY, delta);
-
+    this.modulesListWidget.render(context, mouseX, mouseY, delta);
+    context.drawCenteredString(this.font, this.title, this.width / 2, 20, 0xFFFFFF);
   }
 
   @Override
