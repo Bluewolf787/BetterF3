@@ -20,10 +20,10 @@ jobs:
 
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Run Crowdin Action
-        uses: crowdin/github-action@1.4.13
+        uses: crowdin/github-action@v2
         with:
             upload_sources: false
             upload_translations: false
