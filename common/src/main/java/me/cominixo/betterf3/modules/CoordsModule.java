@@ -42,6 +42,10 @@ public class CoordsModule extends BaseModule {
    */
   public final TextColor defaultColorZ = TextColor.fromLegacyFormat(ChatFormatting.AQUA);
 
+  private Vec3 prevPos = Vec3.ZERO;
+  private Vec3 velocity = Vec3.ZERO;
+  private long positionUpdateTime = 0;
+
   /**
    * Instantiates a new Coordinates module.
    */
@@ -58,7 +62,8 @@ public class CoordsModule extends BaseModule {
     lines.add(new DebugLine("chunk_relative_coords", "format.betterf3.coords", true));
     lines.add(new DebugLine("chunk_coords", "format.betterf3.coords", true));
     lines.add(new DebugLine("velocity", "format.betterf3.coords", true));
-    lines.add(new DebugLine("abs_velocity"));
+    lines.add(new DebugLine("absolute_velocity"));
+    lines.add(new DebugLine("horizontal_velocity"));
 
     lines.get(2).inReducedDebug = true;
   }
@@ -98,13 +103,27 @@ public class CoordsModule extends BaseModule {
       // Player velocity
       final Entity vehicle = cameraEntity.getRootVehicle();
       final int ticksPerSecond = 20;
-      final Vec3 velocity = vehicle != null ? vehicle.getDeltaMovement() : cameraEntity.getDeltaMovement();
-      final String vX = String.format("%.3f", velocity.x() * ticksPerSecond);
-      final String vY = String.format("%.3f", velocity.y() * ticksPerSecond);
-      final String vZ = String.format("%.3f", velocity.z() * ticksPerSecond);
+      if (client.level != null) {
+        final Vec3 currentPos = new Vec3(vehicle.getX(), vehicle.getY(), vehicle.getZ());
+        final long ticksSincePositionChange = client.level.getGameTime() - this.positionUpdateTime;
+        if (!this.prevPos.equals(currentPos)) {
+          this.velocity = this.prevPos.subtract(currentPos);
+          this.positionUpdateTime = client.level.getGameTime();
+        } else if (ticksSincePositionChange > 1) {
+          this.velocity = Vec3.ZERO;
+        }
+        this.prevPos = currentPos;
+      } else {
+        this.velocity = Vec3.ZERO;
+      }
+      final String vX = String.format("%.3f", this.velocity.x() * ticksPerSecond);
+      final String vY = String.format("%.3f", this.velocity.y() * ticksPerSecond);
+      final String vZ = String.format("%.3f", this.velocity.z() * ticksPerSecond);
       lines.get(4).value(Arrays.asList(Utils.styledText(vX, this.colorX),
       Utils.styledText(vY, this.colorY), Utils.styledText(vZ, this.colorZ)));
-      lines.get(5).value(Utils.styledText(String.format("%.3f", velocity.length() * ticksPerSecond), this.defaultNameColor));
+      lines.get(5).value(Utils.styledText(String.format("%.3f", this.velocity.length() * ticksPerSecond), this.defaultNameColor));
+      final Vec3 horizontalVelocity = new Vec3(this.velocity.x(), 0, this.velocity.z());
+      lines.get(6).value(Utils.styledText(String.format("%.3f", horizontalVelocity.length() * ticksPerSecond), this.defaultNameColor));
     }
   }
 }
